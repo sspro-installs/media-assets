@@ -6,337 +6,162 @@
   <title>SSPro Media Assets Library</title>
   <style>
     :root{
-      --bg:#0f172a;        /* slate-900 */
-      --panel:#111827;     /* gray-900 */
-      --card:#1e293b;      /* slate-800 */
-      --muted:#94a3b8;     /* slate-400 */
-      --brand:#22c55e;     /* green-500 */
-      --link:#93c5fd;      /* blue-300 */
+      --bg:#0f172a; --panel:#111827; --card:#1e293b;
+      --muted:#94a3b8; --brand:#22c55e; --link:#93c5fd;
       --ring:rgba(34,197,94,.45);
     }
     *{box-sizing:border-box}
     body{
-      font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-      background:var(--bg); color:#f8fafc; margin:0; padding:24px;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:var(--bg);color:#f8fafc;margin:0;padding:24px;
     }
-    header{max-width:1200px;margin:0 auto 20px auto;display:flex;justify-content:space-between;align-items:center;gap:12px}
+    header{max-width:1200px;margin:0 auto 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
     h1{font-size:28px;color:var(--brand);margin:0}
     .hint{color:var(--muted);font-size:14px}
     main{max-width:1200px;margin:0 auto}
-    details{
-      background:var(--panel);
-      border:1px solid #1f2937;
-      border-radius:14px;
-      margin:14px 0;
-      overflow:hidden;
-    }
-    summary{
-      list-style:none; cursor:pointer;
-      padding:14px 16px; font-weight:700; display:flex; align-items:center; gap:10px;
-    }
+    details{background:var(--panel);border:1px solid #1f2937;border-radius:14px;margin:14px 0;overflow:hidden}
+    summary{list-style:none;cursor:pointer;padding:14px 16px;font-weight:700;display:flex;align-items:center;gap:10px}
     summary::-webkit-details-marker{display:none}
-    .tag{font-weight:600;color:#9ca3af;font-size:13px}
     .chev{display:inline-block;transition:transform .18s ease}
     details[open] .chev{transform:rotate(90deg)}
-    .subgroup{
-      margin:8px 14px 18px 14px;
-      border:1px dashed #243041;
-      border-radius:12px;
-      overflow:hidden;
-    }
-    .sub-head{
-      display:flex;align-items:center;gap:8px;cursor:pointer;
-      padding:10px 12px;background:#0b1220;color:#cbd5e1;font-weight:600;
-    }
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
-      gap:12px; padding:12px;
-      background:linear-gradient(180deg,#0b1220,#0a1322);
-    }
-    .card{
-      background:var(--card); border-radius:12px; padding:8px; text-align:center;
-      transition:transform .18s ease, box-shadow .18s ease; position:relative;
-    }
-    .card:hover{transform:translateY(-3px); box-shadow:0 6px 18px var(--ring)}
-    .thumb{
-      width:100%; height:120px; object-fit:contain; background:#0f172a; border-radius:8px;
-    }
-    .fname{
-      margin-top:6px; font-size:12px; color:var(--link); word-break:break-all; text-decoration:none;
-      display:inline-block; line-height:1.2;
-    }
-    .row{display:flex;align-items:center;gap:8px}
-    .copy{
-      position:absolute; right:8px; top:8px;
-      font-size:11px; padding:3px 6px; border-radius:8px;
-      border:1px solid #324058; background:#0b1220; color:#d1d5db; cursor:pointer;
-    }
-    .copy.ok{background:#0c3b1f; border-color:#14532d; color:#86efac}
-    footer{max-width:1200px;margin:22px auto 0 auto;color:var(--muted);font-size:12px;text-align:center}
+    .pill{background:#102038;border:1px solid #20324a;border-radius:999px;padding:2px 8px;font-size:11px;color:#9bb0cc}
+    .subgroup{margin:8px 14px 18px;border:1px dashed #243041;border-radius:12px;overflow:hidden}
+    .sub-head{display:flex;align-items:center;gap:8px;cursor:pointer;padding:10px 12px;background:#0b1220;color:#cbd5e1;font-weight:600}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;padding:12px;background:linear-gradient(180deg,#0b1220,#0a1322)}
+    .card{background:var(--card);border-radius:12px;padding:8px;text-align:center;transition:transform .18s ease,box-shadow .18s ease;position:relative}
+    .card:hover{transform:translateY(-3px);box-shadow:0 6px 18px var(--ring)}
+    .thumb{width:100%;height:120px;object-fit:contain;background:#0f172a;border-radius:8px}
+    .fname{margin-top:6px;font-size:12px;color:var(--link);word-break:break-all;text-decoration:none;display:inline-block;line-height:1.2;cursor:pointer}
+    .fname:hover{text-decoration:underline;color:#60a5fa}
+    .copy{position:absolute;right:8px;top:8px;font-size:11px;padding:3px 6px;border-radius:8px;border:1px solid #324058;background:#0b1220;color:#d1d5db;cursor:pointer}
+    .copy.ok{background:#0c3b1f;border-color:#14532d;color:#86efac}
+    footer{max-width:1200px;margin:22px auto 0;color:var(--muted);font-size:12px;text-align:center}
     .spinner{width:16px;height:16px;border-radius:50%;border:2px solid #1f2937;border-top-color:var(--brand);animation:spin .8s linear infinite}
     @keyframes spin{to{transform:rotate(360deg)}}
     .muted{color:var(--muted)}
-    .sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
-    .pill{background:#102038;border:1px solid #20324a;border-radius:999px;padding:2px 8px;font-size:11px;color:#9bb0cc}
+    .toast{
+      position:fixed;bottom:20px;right:20px;background:#14532d;color:#bbf7d0;
+      padding:8px 14px;border-radius:8px;font-size:13px;box-shadow:0 0 12px rgba(0,0,0,.3);
+      opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;
+      transform:translateY(10px);
+    }
+    .toast.show{opacity:1;transform:translateY(0)}
   </style>
 </head>
 <body>
   <header>
     <h1>📦 SSPro Media Assets Library</h1>
-    <div class="hint">Auto-discovered • Click folders to expand • Thumbnails are lazy-loaded</div>
+    <div class="hint">Auto-discovered • Click folders to expand • Click name or button to copy URL</div>
   </header>
 
   <main id="app" aria-live="polite">
     <div class="row muted" style="gap:10px;"><div class="spinner"></div> Loading folders…</div>
   </main>
 
+  <div id="toast" class="toast"></div>
   <footer>Hosted on GitHub Pages — <span class="muted">sspro-installs/media-assets</span></footer>
 
 <script>
-/** ====== CONFIG (update if repo/branch changes) ====== */
-const OWNER  = "sspro-installs";
-const REPO   = "media-assets";
-const BRANCH = "main";
+const OWNER="sspro-installs",REPO="media-assets",BRANCH="main";
+const API_BASE=`https://api.github.com/repos/${OWNER}/${REPO}/contents`;
+const RAW_BASE=`https://sspro-installs.github.io/${REPO}`; // use Pages not raw.githubusercontent
+const IMAGE_EXTS=['.png','.jpg','.jpeg','.gif','.svg','.webp','.avif'];
+const isImage=(n)=>IMAGE_EXTS.some(e=>n.toLowerCase().endsWith(e));
+const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
 
-/** ====== Helpers ====== */
-const API_BASE = `https://api.github.com/repos/${OWNER}/${REPO}/contents`;
-const RAW_BASE = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}`;
-const IMAGE_EXTS = ['.png','.jpg','.jpeg','.gif','.svg','.webp','.avif'];
-const isImage = (name) => IMAGE_EXTS.some(ext => name.toLowerCase().endsWith(ext));
-const sleep = (ms)=>new Promise(r=>setTimeout(r,ms));
+const cache={get(k){try{return JSON.parse(sessionStorage.getItem(k))}catch{return null}},
+set(k,v){try{sessionStorage.setItem(k,JSON.stringify(v))}catch{}}};
 
-/** simple per-session cache to reduce API calls */
-const cache = {
-  get(key){ try{ return JSON.parse(sessionStorage.getItem(key)); }catch{ return null; } },
-  set(key,val){ try{ sessionStorage.setItem(key, JSON.stringify(val)); }catch{} }
-};
-
-/** Fetch directory contents (files + subdirs) */
-async function fetchDir(path=""){
-  const key = `dir:${path||"/"}`;
-  const cached = cache.get(key);
-  if (cached) return cached;
-
-  const url = `${API_BASE}/${encodeURIComponent(path)}?ref=${BRANCH}`;
-  const res = await fetch(url, { headers: { "Accept": "application/vnd.github.v3+json" }});
-  if (!res.ok){
-    throw new Error(`GitHub API error ${res.status} for ${path||"/"}`);
-  }
-  const data = await res.json();
-  cache.set(key, data);
-  return data;
+async function fetchDir(p=""){
+  const key=`dir:${p||"/"}`,c=cache.get(key);if(c)return c;
+  const url=`${API_BASE}/${encodeURIComponent(p)}?ref=${BRANCH}`;
+  const r=await fetch(url,{headers:{"Accept":"application/vnd.github.v3+json"}});
+  if(!r.ok)throw new Error(`GitHub API ${r.status} for ${p||"/"}`);
+  const d=await r.json();cache.set(key,d);return d;
 }
-
-/** Build a hierarchical tree of folders/files */
-async function buildTree(rootPath=""){
-  const entries = await fetchDir(rootPath);
-  const dirs = [];
-  const imgs = [];
-
-  for (const item of entries){
-    // skip housekeeping
-    if (item.name === '.DS_Store' || item.name === 'index.html') continue;
-
-    if (item.type === 'dir'){
-      dirs.push(item);
-    } else if (item.type === 'file' && isImage(item.name)){
-      imgs.push({
-        name: item.name,
-        path: item.path,
-        raw: `${RAW_BASE}/${item.path}`
-      });
-    }
+async function buildTree(root=""){
+  const e=await fetchDir(root),dirs=[],imgs=[];
+  for(const i of e){
+    if(i.name==='.DS_Store'||i.name==='index.html')continue;
+    if(i.type==='dir')dirs.push(i);
+    else if(i.type==='file'&&isImage(i.name))
+      imgs.push({name:i.name,path:i.path,raw:`${RAW_BASE}/${i.path}`});
   }
-
-  // recurse into subfolders
-  const children = [];
-  for (const d of dirs){
-    children.push({
-      name: d.name,
-      path: d.path,
-      ...(await buildTree(d.path))
-    });
-    // small delay to be nice to the API
+  const children=[];
+  for(const d of dirs){
+    children.push({name:d.name,path:d.path,...(await buildTree(d.path))});
     await sleep(80);
   }
-
-  return { images: imgs, folders: children };
+  return{images:imgs,folders:children};
 }
-
-/** Group strategy:
- * - Top-level folders (branding, clients, vendors, shared) become primary <details>
- * - Their subfolders become secondary collapsibles
- */
 function renderApp(tree){
-  const app = document.getElementById('app');
-  app.innerHTML = "";
-
-  // If repo has files at root (unlikely for assets), show as "root"
-  if (tree.images?.length){
-    app.appendChild(renderPrimary("root", tree));
-  }
-
-  for (const top of tree.folders){
-    app.appendChild(renderPrimary(top.name, top));
-  }
+  const app=document.getElementById('app');app.innerHTML="";
+  if(tree.images?.length)app.appendChild(renderPrimary("root",tree));
+  for(const top of tree.folders)app.appendChild(renderPrimary(top.name,top));
 }
-
-/** primary folder renderer (top-level) */
-function renderPrimary(title, node){
-  const wrap = document.createElement('details');
-  wrap.className = "primary";
-  // start collapsed by default for compactness
-  // wrap.open = false;
-
-  const sum = document.createElement('summary');
-  sum.innerHTML = `
-    <span class="chev">▶</span>
-    <span style="font-size:18px">${escapeHtml(title)}</span>
-    <span class="pill">${countImages(node)} images</span>
-  `;
+function renderPrimary(title,node){
+  const wrap=document.createElement('details');
+  const sum=document.createElement('summary');
+  sum.innerHTML=`<span class="chev">▶</span><span style="font-size:18px">${title}</span><span class="pill">${countImages(node)} images</span>`;
   wrap.appendChild(sum);
-
-  // If there are direct images inside this top folder, show a grid directly
-  if (node.images?.length){
-    const grid = renderGrid(node.images);
-    wrap.appendChild(grid);
-  }
-
-  // Render each subfolder as a secondary accordion
-  for (const sub of node.folders){
-    wrap.appendChild(renderSecondary(`${title} › ${sub.name}`, sub));
-  }
-
+  if(node.images?.length)wrap.appendChild(renderGrid(node.images));
+  for(const sub of node.folders)wrap.appendChild(renderSecondary(`${title} › ${sub.name}`,sub));
   return wrap;
 }
-
-/** secondary folder renderer (subgroups: e.g., vendors › greengo) */
-function renderSecondary(label, node){
-  const block = document.createElement('div');
-  block.className = "subgroup";
-
-  const head = document.createElement('div');
-  head.className = "sub-head";
-  head.innerHTML = `
-    <span class="chev">▶</span>
-    <span>${escapeHtml(label)}</span>
-    <span class="pill">${countImages(node)} images</span>
-  `;
+function renderSecondary(label,node){
+  const block=document.createElement('div');block.className="subgroup";
+  const head=document.createElement('div');
+  head.className="sub-head";
+  head.innerHTML=`<span class="chev">▶</span><span>${label}</span><span class="pill">${countImages(node)} images</span>`;
   block.appendChild(head);
-
-  const grid = renderGrid(node.images);
-  grid.style.display = "none";
-  block.appendChild(grid);
-
-  // toggle
-  head.addEventListener('click', ()=>{
-    const open = grid.style.display !== "none";
-    grid.style.display = open ? "none" : "grid";
-    const chev = head.querySelector('.chev');
-    chev.style.transform = open ? "rotate(0deg)" : "rotate(90deg)";
+  const grid=renderGrid(node.images);grid.style.display="none";block.appendChild(grid);
+  head.addEventListener('click',()=>{const open=grid.style.display!=="none";
+    grid.style.display=open?"none":"grid";
+    head.querySelector('.chev').style.transform=open?"rotate(0deg)":"rotate(90deg)";
   });
-
-  // if there are deeper folders, render them nested (rare for now but supported)
-  for (const deeper of node.folders){
-    const nested = renderSecondary(`${label} › ${deeper.name}`, deeper);
-    nested.style.display = "none";
-    block.appendChild(nested);
-
-    // expand deeper when head is opened
-    head.addEventListener('click', ()=>{
-      nested.style.display = grid.style.display;
-    });
+  for(const deeper of node.folders){
+    const nested=renderSecondary(`${label} › ${deeper.name}`,deeper);
+    nested.style.display="none";block.appendChild(nested);
+    head.addEventListener('click',()=>{nested.style.display=grid.style.display;});
   }
-
   return block;
 }
-
-/** image grid */
 function renderGrid(files){
-  const grid = document.createElement('div');
-  grid.className = "grid";
-
+  const grid=document.createElement('div');grid.className="grid";
   files.sort((a,b)=>a.name.localeCompare(b.name));
-
-  files.forEach(file=>{
-    const card = document.createElement('div');
-    card.className = "card";
-
-    const img = document.createElement('img');
-    img.className = "thumb";
-    img.loading = "lazy";
-    img.decoding = "async";
-    img.src = file.raw;
-    img.alt = file.name;
-
-    const a = document.createElement('a');
-    a.className = "fname";
-    a.href = file.raw;
-    a.target = "_blank";
-    a.rel = "noopener";
-    a.textContent = file.name;
-
-    const btn = document.createElement('button');
-    btn.className = "copy";
-    btn.type = "button";
-    btn.title = "Copy direct URL";
-    btn.textContent = "Copy";
-    btn.addEventListener('click', async ()=>{
-      try{
-        await navigator.clipboard.writeText(file.raw);
-        btn.textContent = "Copied";
-        btn.classList.add('ok');
-        setTimeout(()=>{ btn.textContent = "Copy"; btn.classList.remove('ok'); }, 900);
-      }catch(e){
-        btn.textContent = "Failed";
-      }
+  files.forEach(f=>{
+    const card=document.createElement('div');card.className="card";
+    const img=document.createElement('img');img.className="thumb";img.loading="lazy";img.src=f.raw;img.alt=f.name;
+    const a=document.createElement('a');a.className="fname";a.textContent=f.name;a.href=f.raw;a.target="_blank";
+    a.addEventListener('click',async e=>{
+      e.preventDefault();
+      await copyUrl(f.raw);
     });
-
-    card.appendChild(img);
-    card.appendChild(a);
-    card.appendChild(btn);
-    grid.appendChild(card);
+    const btn=document.createElement('button');
+    btn.className="copy";btn.textContent="Copy";
+    btn.addEventListener('click',()=>copyUrl(f.raw,btn));
+    card.append(img,a,btn);grid.appendChild(card);
   });
-
-  if (files.length === 0){
-    const p = document.createElement('p');
-    p.className = "muted";
-    p.style.padding = "12px";
-    p.textContent = "No images in this folder.";
-    grid.appendChild(p);
-  }
-
+  if(!files.length){const p=document.createElement('p');p.className="muted";p.style.padding="12px";p.textContent="No images in this folder.";grid.appendChild(p);}
   return grid;
 }
-
-function countImages(node){
-  let n = (node.images?.length || 0);
-  for (const f of (node.folders||[])) n += countImages(f);
-  return n;
-}
-
-function escapeHtml(s){
-  return (s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-}
-
-/** Boot */
-(async function init(){
-  const app = document.getElementById('app');
+async function copyUrl(url,btn){
   try{
-    const tree = await buildTree(""); // repo root
-    renderApp(tree);
-  }catch(err){
-    console.error(err);
-    app.innerHTML = `
-      <div style="padding:12px;border:1px solid #3f1d1d;background:#1a0f0f;border-radius:12px">
-        <strong style="color:#fecaca">Failed to load media list.</strong>
-        <div class="muted" style="margin-top:6px">Reason: ${escapeHtml(err.message)}</div>
-        <div class="muted" style="margin-top:6px">Tip: GitHub’s API allows ~60 unauthenticated requests/hour per IP.
-        Try again in a minute if you just performed many operations.</div>
-      </div>
-    `;
-  }
+    await navigator.clipboard.writeText(url);
+    if(btn){btn.textContent="Copied";btn.classList.add("ok");setTimeout(()=>{btn.textContent="Copy";btn.classList.remove("ok")},1000);}
+    showToast("✅ Copied: "+url.split("/").pop());
+  }catch{if(btn)btn.textContent="Failed";}
+}
+function showToast(msg){
+  const t=document.getElementById("toast");
+  t.textContent=msg;t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),1500);
+}
+function countImages(n){let c=n.images?.length||0;for(const f of n.folders||[])c+=countImages(f);return c;}
+(async function init(){
+  const app=document.getElementById('app');
+  try{const tree=await buildTree("");renderApp(tree);}
+  catch(e){app.innerHTML=`<div style="padding:12px;border:1px solid #3f1d1d;background:#1a0f0f;border-radius:12px"><strong style="color:#fecaca">Failed.</strong><div class="muted">${e.message}</div></div>`;}
 })();
 </script>
 </body>
