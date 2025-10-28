@@ -46,6 +46,11 @@
       transform:translateY(10px);
     }
     .toast.show{opacity:1;transform:translateY(0)}
+    #refresh{
+      background:#22c55e;color:#fff;padding:6px 12px;border:none;border-radius:8px;cursor:pointer;
+      transition:background .2s ease;margin-bottom:10px;
+    }
+    #refresh:hover{background:#16a34a}
   </style>
 </head>
 <body>
@@ -53,6 +58,8 @@
     <h1>📦 SSPro Media Assets Library</h1>
     <div class="hint">Auto-discovered • Click folders to expand • Click name or button to copy URL</div>
   </header>
+
+  <button id="refresh">🔄 Refresh</button>
 
   <main id="app" aria-live="polite">
     <div class="row muted" style="gap:10px;"><div class="spinner"></div> Loading folders…</div>
@@ -69,16 +76,24 @@ const IMAGE_EXTS=['.png','.jpg','.jpeg','.gif','.svg','.webp','.avif'];
 const isImage=(n)=>IMAGE_EXTS.some(e=>n.toLowerCase().endsWith(e));
 const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
 
-const cache={get(k){try{return JSON.parse(sessionStorage.getItem(k))}catch{return null}},
-set(k,v){try{sessionStorage.setItem(k,JSON.stringify(v))}catch{}}};
+const cache={
+  get(k){try{return JSON.parse(sessionStorage.getItem(k))}catch{return null}},
+  set(k,v){try{sessionStorage.setItem(k,JSON.stringify(v))}catch{}}
+};
 
 async function fetchDir(p=""){
-  const key=`dir:${p||"/"}`,c=cache.get(key);if(c)return c;
+  const key=`dir:${p||"/"}`;
+  const cached=cache.get(key);
+  // 🟩 Allow bypass with ?refresh in URL
+  if(cached && !location.search.includes("refresh")) return cached;
   const url=`${API_BASE}/${encodeURIComponent(p)}?ref=${BRANCH}`;
   const r=await fetch(url,{headers:{"Accept":"application/vnd.github.v3+json"}});
   if(!r.ok)throw new Error(`GitHub API ${r.status} for ${p||"/"}`);
-  const d=await r.json();cache.set(key,d);return d;
+  const d=await r.json();
+  cache.set(key,d);
+  return d;
 }
+
 async function buildTree(root=""){
   const e=await fetchDir(root),dirs=[],imgs=[];
   for(const i of e){
@@ -89,16 +104,25 @@ async function buildTree(root=""){
   }
   const children=[];
   for(const d of dirs){
-    children.push({name:d.name,path:d.path,...(await buildTree(d.path))});
-    await sleep(80);
+    try{
+      children.push({name:d.name,path:d.path,...(await buildTree(d.path))});
+      await sleep(150); // 🟩 increased delay for reliability
+    }catch(err){
+      console.warn("Retrying folder",d.path);
+      await sleep(300);
+      children.push({name:d.name,path:d.path,...(await buildTree(d.path))});
+    }
   }
   return{images:imgs,folders:children};
 }
+
 function renderApp(tree){
-  const app=document.getElementById('app');app.innerHTML="";
+  const app=document.getElementById('app');
+  app.innerHTML="";
   if(tree.images?.length)app.appendChild(renderPrimary("root",tree));
   for(const top of tree.folders)app.appendChild(renderPrimary(top.name,top));
 }
+
 function renderPrimary(title,node){
   const wrap=document.createElement('details');
   const sum=document.createElement('summary');
@@ -108,6 +132,7 @@ function renderPrimary(title,node){
   for(const sub of node.folders)wrap.appendChild(renderSecondary(`${title} › ${sub.name}`,sub));
   return wrap;
 }
+
 function renderSecondary(label,node){
   const block=document.createElement('div');block.className="subgroup";
   const head=document.createElement('div');
@@ -115,7 +140,8 @@ function renderSecondary(label,node){
   head.innerHTML=`<span class="chev">▶</span><span>${label}</span><span class="pill">${countImages(node)} images</span>`;
   block.appendChild(head);
   const grid=renderGrid(node.images);grid.style.display="none";block.appendChild(grid);
-  head.addEventListener('click',()=>{const open=grid.style.display!=="none";
+  head.addEventListener('click',()=>{
+    const open=grid.style.display!=="none";
     grid.style.display=open?"none":"grid";
     head.querySelector('.chev').style.transform=open?"rotate(0deg)":"rotate(90deg)";
   });
@@ -126,6 +152,7 @@ function renderSecondary(label,node){
   }
   return block;
 }
+
 function renderGrid(files){
   const grid=document.createElement('div');grid.className="grid";
   files.sort((a,b)=>a.name.localeCompare(b.name));
@@ -142,26 +169,57 @@ function renderGrid(files){
     btn.addEventListener('click',()=>copyUrl(f.raw,btn));
     card.append(img,a,btn);grid.appendChild(card);
   });
-  if(!files.length){const p=document.createElement('p');p.className="muted";p.style.padding="12px";p.textContent="No images in this folder.";grid.appendChild(p);}
+  if(!files.length){
+    const p=document.createElement('p');
+    p.className="muted";p.style.padding="12px";
+    p.textContent="No images in this folder.";
+    grid.appendChild(p);
+  }
   return grid;
 }
+
 async function copyUrl(url,btn){
   try{
     await navigator.clipboard.writeText(url);
-    if(btn){btn.textContent="Copied";btn.classList.add("ok");setTimeout(()=>{btn.textContent="Copy";btn.classList.remove("ok")},1000);}
+    if(btn){
+      btn.textContent="Copied";
+      btn.classList.add("ok");
+      setTimeout(()=>{btn.textContent="Copy";btn.classList.remove("ok")},1000);
+    }
     showToast("✅ Copied: "+url.split("/").pop());
   }catch{if(btn)btn.textContent="Failed";}
 }
+
 function showToast(msg){
   const t=document.getElementById("toast");
   t.textContent=msg;t.classList.add("show");
   setTimeout(()=>t.classList.remove("show"),1500);
 }
-function countImages(n){let c=n.images?.length||0;for(const f of n.folders||[])c+=countImages(f);return c;}
+
+function countImages(n){
+  let c=n.images?.length||0;
+  for(const f of n.folders||[])c+=countImages(f);
+  return c;
+}
+
+// 🟩 Refresh button clears cache
+document.getElementById("refresh").onclick=()=>{
+  sessionStorage.clear();
+  location.reload();
+};
+
 (async function init(){
   const app=document.getElementById('app');
-  try{const tree=await buildTree("");renderApp(tree);}
-  catch(e){app.innerHTML=`<div style="padding:12px;border:1px solid #3f1d1d;background:#1a0f0f;border-radius:12px"><strong style="color:#fecaca">Failed.</strong><div class="muted">${e.message}</div></div>`;}
+  try{
+    const tree=await buildTree("");
+    renderApp(tree);
+  }catch(e){
+    console.error(e);
+    app.innerHTML=`<div style="padding:12px;border:1px solid #3f1d1d;background:#1a0f0f;border-radius:12px">
+      <strong style="color:#fecaca">Failed.</strong>
+      <div class="muted">${e.message}</div>
+    </div>`;
+  }
 })();
 </script>
 </body>
